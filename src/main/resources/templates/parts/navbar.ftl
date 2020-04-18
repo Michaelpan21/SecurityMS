@@ -14,15 +14,14 @@
             <li class="nav-item">
                 <a class="nav-link" href="/profile">Профиль</a>
             </li>
-
         </ul>
 
-        <div class="navbar-text">${name}</div>
-        <div>
-            <form action="/logout" method="post">
+        <div class="navbar-text navbar-fs">${name}</div>
+        <#if user??>
+            <form class="nav-r" action="/logout" method="post">
                 <input class="input" type="hidden" name="_csrf" value="${_csrf.token}"/>
-                <button class="btn btn-primary ml-2" type="submit">Выйти</button>
+                <button class="lg-out-btn" type="submit"><span class="pe-7s-upload lg-out"></span></button>
             </form>
-        </div>
+        </#if>
     </div>
 </nav>

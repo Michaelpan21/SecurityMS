@@ -105,3 +105,37 @@ body{
 .navbar-fs {
     font-size: 16px;
 }
+
+.navbar-right {
+    float: right !important;
+    float: right;
+}
+
+.nav-r {
+    height: 100%;
+    margin: 0;
+    margin-left: 10px;
+}
+
+.lg-out-btn {
+    background: none;
+    border: none;
+    height: 100%;
+}
+.lg-out{
+    display: inline-block;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transform: rotate(90deg);
+    font-size: 40px;
+}
+
+.lg-out-btn:hover {
+    color: blue;
+}
