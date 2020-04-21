@@ -19,14 +19,15 @@ public class AudienceController {
     AudienceService audienceService;
 
     @GetMapping
-    public List<Map<String, String>> getAudiences() {
-        return audienceService.getAudiences();
+    public List<Map<String, String>> getAudiences(@RequestParam("building") Short building,
+                                                  @RequestParam("floor") Short floor) {
+        return audienceService.getAudiences(building, floor);
     }
 
     @PutMapping("{id}")
     @PreAuthorize("hasAuthority('PROFESSOR')")
     public Map<String, String> reserveAudiences(@PathVariable Long id, @AuthenticationPrincipal User user) {
         audienceService.reserveAudience(user.getId(), id);
-        return new HashMap<>() {{put("status", "OK");}};
+        return audienceService.getAudienceById(id);
     }
 }

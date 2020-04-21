@@ -12,6 +12,24 @@ public class Audience {
     private Long id;
     private String number;
     private Long principalId;
+    private Short building;
+    private Short floor;
+
+    public Short getBuilding() {
+        return building;
+    }
+
+    public void setBuilding(Short building) {
+        this.building = building;
+    }
+
+    public Short getFloor() {
+        return floor;
+    }
+
+    public void setFloor(Short floor) {
+        this.floor = floor;
+    }
 
     public Long getPrincipalId() {
         return principalId;

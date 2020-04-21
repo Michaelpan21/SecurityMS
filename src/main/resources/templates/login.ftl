@@ -15,6 +15,9 @@
          </div>
          <input type="hidden" name="_csrf" value="${_csrf.token}"/>
          <input type="submit" class="lgn-btn" value="Вход">
+         <div class="mt-2">
+             <a class="forget-link" href="https://pro.guap.ru/user/forgot-password">Забыли пароль?</a>
+         </div>
      </form>
 
     <script type="text/javascript">

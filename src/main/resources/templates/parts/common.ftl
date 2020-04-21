@@ -17,13 +17,14 @@
             <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
             <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
         </head>
         <body>
             <#include "navbar.ftl">
             <div class="container">
                 <#nested>
             </div>
-
+            <script src="http://localhost:6969/static/js/main.js"></script>
         </body>
     </html>
 
