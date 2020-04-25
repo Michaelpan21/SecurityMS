@@ -6,8 +6,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.guap.securityms.domain.User;
 import ru.guap.securityms.service.AudienceService;
+import ru.guap.securityms.service.utils.AudienceAction;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,8 +26,13 @@ public class AudienceController {
 
     @PutMapping("{id}")
     @PreAuthorize("hasAuthority('PROFESSOR')")
-    public Map<String, String> reserveAudiences(@PathVariable Long id, @AuthenticationPrincipal User user) {
-        audienceService.reserveAudience(user.getId(), id);
-        return audienceService.getAudienceById(id);
+    public void reserveAudiences(@PathVariable Integer id, @RequestBody Map<String, String> action,
+                                 @AuthenticationPrincipal User user) {
+        if (action.get("action").equalsIgnoreCase(AudienceAction.RESERVE.name())) {
+            audienceService.reserveAudience(user.getId(), id);
+        }
+        else if (action.get("action").equalsIgnoreCase(AudienceAction.LEAVE.name())) {
+            audienceService.endReserveAudience(id);
+        }
     }
 }

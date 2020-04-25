@@ -2,14 +2,10 @@ package ru.guap.securityms.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.guap.securityms.domain.Audience;
 import ru.guap.securityms.repos.AudienceRepo;
 
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.stream.Stream;
 
 @Service
 public class AudienceService {
@@ -17,25 +13,13 @@ public class AudienceService {
     @Autowired
     AudienceRepo audienceRepo;
 
-    @Autowired
-    Lock lock;
-
     @Transactional
-    public void reserveAudience(Long userId, Long audienceId) {
-        try {
-            lock.tryLock(2, TimeUnit.SECONDS);
-            if (!isReserved(audienceId)) {
-                audienceRepo.updatePrincipalId(userId, audienceId);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            lock.unlock();
-        }
+    public synchronized void reserveAudience(Integer userId, Integer audienceId) {
+        audienceRepo.updatePrincipalId(userId, audienceId);
     }
 
     @Transactional
-    public void endReserveAudience(Long userId, Long audienceId) {
+    public synchronized void endReserveAudience(Integer audienceId) {
         audienceRepo.updatePrincipalId(null, audienceId);
     }
 
@@ -46,6 +30,8 @@ public class AudienceService {
             model.add(new HashMap<>() {{
                 put("id", audience.getId().toString());
                 put("number", audience.getNumber());
+                put("building", String.valueOf(audience.getBuilding()));
+                put("floor", String.valueOf(audience.getFloor()));
                 put("principal_id", String.valueOf(audience.getPrincipalId()));
             }});
         });
@@ -53,17 +39,19 @@ public class AudienceService {
     }
 
     @Transactional
-    public Map<String, String> getAudienceById(Long id) {
+    public Map<String, String> getAudienceById(Integer id) {
         Map<String, String> model = new HashMap<>();
         audienceRepo.findById(id).ifPresent(audience -> {
             model.put("id", audience.getId().toString());
             model.put("number", audience.getNumber());
+            model.put("building", String.valueOf(audience.getBuilding()));
+            model.put("floor", String.valueOf(audience.getFloor()));
             model.put("principal_id", String.valueOf(audience.getPrincipalId()));
         });
         return model;
     }
 
-    public boolean isReserved(Long audienceId) {
+    public boolean isReserved(Integer audienceId) {
         return Objects.nonNull(audienceRepo.findById(audienceId).get().getPrincipalId());
     }
 

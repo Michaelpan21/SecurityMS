@@ -10,8 +10,6 @@ import ru.guap.securityms.repos.UserRepo;
 @Service
 public class UserService implements UserDetailsService {
 
-    private static final String USER_RESPONSE = "https://pro.guap.ru/getuserprofile/191";
-
     @Autowired
     private UserRepo userRepo;
 

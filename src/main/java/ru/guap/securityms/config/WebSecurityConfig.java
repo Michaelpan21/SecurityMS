@@ -43,7 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .rememberMe()
                 .and()
                 .logout()
-                .permitAll().and().csrf().ignoringAntMatchers("/audience/**");
+                .permitAll().and().csrf().ignoringAntMatchers("/audience/**", "/schedule/**");
     }
 
     @Override

@@ -1,47 +1,69 @@
 
 var audienceApi = Vue.resource('/audience{/id}');
+var scheduleApi = Vue.resource('/schedule{/id}');
 
 Vue.component('audiences-menu', {
-  props: ['number', 'id', 'isShown'],
+
+  props: ['audience', 'isShown', 'schedule'],
   template:
     '<div v-if="isShown == true" class="menu">' +
         '<div class="menu-header">' +
             '<button class="close-btn" @click="closeMenu">X</button></div>' +
-        '<h3>Аудитория {{number}}</h3>' +
+        '<h3>Аудитория {{audience.number}}</h3>' +
         '<button @click="openAudience">Получить доступ</button>' +
         '<button @click="closeAudience">Освободить</button>' +
     '</div>',
+  created: {
+    getSchedule: {
+      scheduleApi.get({id: this.audience.id, audience_number: this.audience.number}).then(response =>
+        response.json().then(data => menu.schedule = data));
+    },
+  },
   methods: {
     closeMenu: function() {
         menu.isShown = false;
     },
     openAudience: function() {
-        audienceApi.update({id: this.id}, this.id).then(response => {
-          app.audiences.forEach(item => {
-            if(item.id == response.body.id) {
-              item = response.body;
-              console.log(response.body.number);
-            }
-          });
+        audienceApi.update({id: this.audience.id}, {action: 'reserve'}).then(response => {
+          if (response.ok) {
+              audienceApi.get({building: this.audience.building, floor: this.audience.floor}).then(response => {
+                app.audiences = response.body;
+              });
+          }
+          this.closeMenu();
         });
     },
     closeAudience: function() {
-        audienceApi.update(id);
+        audienceApi.update({id: this.audience.id}, {action: 'leave'}).then(response => {
+          if (response.ok) {
+              audienceApi.get({building: this.audience.building, floor: this.audience.floor}).then(response => {
+                app.audiences = response.body;
+              });
+          }
+          this.closeMenu();
+        });
     }
   }
 });
 
-Vue.component('audiences-row', {
+Vue.component('audiences-button', {
   props: ['audience'],
-  template: '<button class="a-box" @click="openMenu">' +
-                '<span>{{audience.number}}</span><div v-if="audience.principal_id > 0">{{audience.principal_id}}</div>' +
+  template: '<button v-bind:class="classObject" @click="openMenu">' +
+                '<span>{{audience.number}}</span>' +
             '</button>',
+  computed: {
+    classObject: function() {
+        return {
+           'a-box': this.audience.principal_id != 0,
+           'a-box-reserved': this.audience.principal_id > 0
+        }
+    },
+  },
   methods: {
     openMenu: function() {
         menu.isShown = true;
-        menu.number = this.audience.number;
-        menu.id = this.audience.id;
-    }
+        menu.audience = this.audience;
+    },
   }
 });
 
@@ -49,8 +71,9 @@ Vue.component('audiences-list', {
   props: ['audiences'],
   template:
     '<div class="grid-container">' +
-         '<audiences-row v-for="audience in audiences" :key="audience.id" :audience ="audience"/>' +
-    '</div>'
+         '<audiences-button v-for="audience in audiences" :key="audience.id" :audience ="audience"/>' +
+    '</div>',
+
 });
 
 
@@ -65,11 +88,11 @@ var app = new Vue({
 
 var menu = new Vue({
   el: '#menu',
-  template: '<audiences-menu :number ="number" :id="id" :isShown="isShown"/>',
+  template: '<audiences-menu :audience="audience" :isShown="isShown"/>',
   data: {
-    number: null,
-    id: null,
+    audience: null,
     isShown: false,
+    schedule: [],
   }
 });
 

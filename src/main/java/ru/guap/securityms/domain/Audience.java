@@ -9,9 +9,9 @@ public class Audience {
 
     @Id
     @GeneratedValue
-    private Long id;
+    private Integer id;
     private String number;
-    private Long principalId;
+    private Integer principalId;
     private Short building;
     private Short floor;
 
@@ -31,19 +31,19 @@ public class Audience {
         this.floor = floor;
     }
 
-    public Long getPrincipalId() {
+    public Integer getPrincipalId() {
         return principalId;
     }
 
-    public void setPrincipalId(Long principal) {
+    public void setPrincipalId(Integer principal) {
         this.principalId = principal;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

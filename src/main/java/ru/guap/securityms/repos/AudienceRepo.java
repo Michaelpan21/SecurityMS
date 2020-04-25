@@ -8,11 +8,11 @@ import ru.guap.securityms.domain.Audience;
 import java.util.List;
 
 
-public interface AudienceRepo extends CrudRepository<Audience, Long> {
+public interface AudienceRepo extends CrudRepository<Audience, Integer> {
 
     @Modifying
     @Query(value = "update Audience a set a.principalId = ?1 where a.id = ?2")
-    Integer updatePrincipalId(Long principalId, Long id);
+    Integer updatePrincipalId(Integer principalId, Integer id);
 
     Audience findByNumber(String number);
 
