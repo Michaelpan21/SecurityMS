@@ -2,16 +2,22 @@ package ru.guap.securityms.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.guap.securityms.domain.Audience;
+import ru.guap.securityms.domain.Schedule;
 import ru.guap.securityms.repos.AudienceRepo;
+import ru.guap.securityms.service.base.IService;
 
 import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
-public class AudienceService {
+public class AudienceService implements IService<Audience> {
 
     @Autowired
     AudienceRepo audienceRepo;
+
+    @Autowired
+    ScheduleService scheduleService;
 
     @Transactional
     public synchronized void reserveAudience(Integer userId, Integer audienceId) {
@@ -23,36 +29,44 @@ public class AudienceService {
         audienceRepo.updatePrincipalId(null, audienceId);
     }
 
-    @Transactional
     public List<Map<String, String>> getAudiences(Short building, Short floor) {
-        List<Map<String, String>> model = new ArrayList<>();
-        audienceRepo.findByBuildingAndFloorOrderByNumber(building, floor).forEach(audience -> {
-            model.add(new HashMap<>() {{
-                put("id", audience.getId().toString());
-                put("number", audience.getNumber());
-                put("building", String.valueOf(audience.getBuilding()));
-                put("floor", String.valueOf(audience.getFloor()));
-                put("principal_id", String.valueOf(audience.getPrincipalId()));
-            }});
-        });
-        return model;
-    }
-
-    @Transactional
-    public Map<String, String> getAudienceById(Integer id) {
-        Map<String, String> model = new HashMap<>();
-        audienceRepo.findById(id).ifPresent(audience -> {
-            model.put("id", audience.getId().toString());
-            model.put("number", audience.getNumber());
-            model.put("building", String.valueOf(audience.getBuilding()));
-            model.put("floor", String.valueOf(audience.getFloor()));
-            model.put("principal_id", String.valueOf(audience.getPrincipalId()));
-        });
-        return model;
+        return createJson(audienceRepo.findByBuildingAndFloorOrderByNumber(building, floor));
     }
 
     public boolean isReserved(Integer audienceId) {
         return Objects.nonNull(audienceRepo.findById(audienceId).get().getPrincipalId());
     }
 
+    //TODO Доделать фильтр после тестов
+
+    @Override
+    public List<Map<String, String>> createJson(Iterable<Audience> audiences) {
+        List<Map<String, String>> model = new ArrayList<>();
+        audiences.forEach(
+                audience -> {
+                    Optional<Schedule> schedule = audience.getSchedule().stream().filter(sched ->
+                            sched.getAudienceId().equals(audience.getId())
+                                    && sched.getDayOfWeek().equals("MONDAY")
+                    ).findFirst();
+                    Map<String, String> node = createJsonNode(audience);
+
+                    if(schedule.isPresent()) {
+                        node.putAll(scheduleService.createJsonNode(schedule.get()));
+                    }
+
+                    model.add(node);
+                });
+        return model;
+    }
+
+    @Override
+    public Map<String, String> createJsonNode(Audience audience) {
+        return new HashMap<>() {{
+            put("id", audience.getId().toString());
+            put("number", audience.getNumber());
+            put("building", String.valueOf(audience.getBuilding()));
+            put("floor", String.valueOf(audience.getFloor()));
+            put("principal_id", String.valueOf(audience.getPrincipalId()));
+        }};
+    }
 }

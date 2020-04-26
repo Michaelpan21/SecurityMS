@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface ScheduleRepo extends CrudRepository<Schedule, Integer> {
 
-    List<Schedule> findAllByDayOfWeekAndAudience_numberLikeIgnoreCase(String dayOfWeek, String number);
+    List<Schedule> findAllByDayOfWeekAndAudience_id(String dayOfWeek, Integer id);
 
     List<Schedule> findAllByAudience_buildingAndAudience_floorOrderByAudience_number(Short floor, Short building);
 }

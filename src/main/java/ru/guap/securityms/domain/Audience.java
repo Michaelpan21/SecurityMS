@@ -1,8 +1,7 @@
 package ru.guap.securityms.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Audience {
@@ -14,6 +13,9 @@ public class Audience {
     private Integer principalId;
     private Short building;
     private Short floor;
+
+    @OneToMany(mappedBy = "audience", fetch = FetchType.EAGER)
+    private List<Schedule> schedule;
 
     public Short getBuilding() {
         return building;
@@ -53,5 +55,13 @@ public class Audience {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public List<Schedule> getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(List<Schedule> schedule) {
+        this.schedule = schedule;
     }
 }

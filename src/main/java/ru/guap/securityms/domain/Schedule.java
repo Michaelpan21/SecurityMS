@@ -1,6 +1,7 @@
 package ru.guap.securityms.domain;
 
 import javax.persistence.*;
+import java.time.LocalTime;
 
 @Entity
 public class Schedule {
@@ -29,10 +30,13 @@ public class Schedule {
     @JoinColumn(name = "audience_id")
     private Audience audience;
 
+    @ManyToOne
+    @JoinColumn(name = "lesson_id")
+    private Lesson lesson;
+
     private String dayOfWeek;
     private Boolean upperWeek;
     private Boolean lowerWeek;
-    private Short lesson;
 
     public String getSubjectName() {
         return subject.getName();
@@ -56,6 +60,18 @@ public class Schedule {
 
     public String getAudienceNumber() {
         return audience.getNumber();
+    }
+
+    public Short getLessonNumber() {
+        return lesson.getNumber();
+    }
+
+    public LocalTime getStartTime() {
+        return lesson.getStartTime();
+    }
+
+    public LocalTime getEndTime() {
+        return lesson.getEndTime();
     }
 
     public Integer getAudienceId() {
@@ -126,11 +142,19 @@ public class Schedule {
         this.lowerWeek = lowerWeek;
     }
 
-    public Short getLesson() {
+    public Audience getAudience() {
+        return audience;
+    }
+
+    public void setAudience(Audience audience) {
+        this.audience = audience;
+    }
+
+    public Lesson getLesson() {
         return lesson;
     }
 
-    public void setLesson(Short lesson) {
+    public void setLesson(Lesson lesson) {
         this.lesson = lesson;
     }
 }

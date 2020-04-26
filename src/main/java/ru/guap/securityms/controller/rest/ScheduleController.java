@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.guap.securityms.service.ScheduleService;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +18,7 @@ public class ScheduleController {
     ScheduleService scheduleService;
 
     @GetMapping("{id}")
-    public List<Map<String, String>> getSchedule(@PathVariable String audience) {
-        return scheduleService.getByDayAndAudience(LocalDate.now().getDayOfWeek().name(), audience);
+    public List<Map<String, String>> getSchedule(@PathVariable Integer id) {
+        return scheduleService.getTodayByAudience(id);
     }
 }
