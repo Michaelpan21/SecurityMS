@@ -4,13 +4,10 @@ var scheduleApi = Vue.resource('/schedule{/id}');
 
 Vue.component('schedule-line', {
   props: ['sLine'],
-  template: '<div>'+
-              '<h6>пара</h6>' +
-              '<div>' +
-                '<b>{{sLine.subject_type}}</b> - {{sLine.subject}}' +
-                '<i> - Б.М. {{sLine.audience}}</i>' +
-              '</div>' +
-              '<small>Преподаватель: {{sLine.professor}} - {{sLine.prof_degree}}  Группа: {{sLine.group}}</small>' +
+  template: '<div class="line">'+
+              '<h7>{{sLine.lesson_number}} пара ({{sLine.start_time}} - {{sLine.end_time}})</h7>' +
+              '<div><b>{{sLine.subject_type}}</b> — {{sLine.subject}}</div>' +
+              '<small>Преподаватель: {{sLine.professor}}   Группа: {{sLine.group}}</small>' +
             '</div>',
 });
 
@@ -19,11 +16,16 @@ Vue.component('audiences-menu', {
   template:
     '<div v-if="isShown == true" class="menu">' +
       '<div class="menu-header">' +
-        '<button class="close-btn" @click="closeMenu">X</button></div>' +
-        '<h3>Аудитория {{audience.number}}</h3>' +
+        '<button @click="closeMenu">закрыть</button>' +
+      '</div>' +
+      '<h3>Аудитория {{audience.number}}</h3>' +
+      '<div class="schedule">' +
         '<schedule-line v-for="sLine in schedule" :key="sLine.s_id" :sLine ="sLine"/>' +
+      '</div>' +
+      '<div class="btn-bar">' +
         '<button @click="openAudience">Получить доступ</button>' +
         '<button @click="closeAudience">Освободить</button>' +
+      '</div>' +
     '</div>',
   methods: {
     closeMenu: function() {

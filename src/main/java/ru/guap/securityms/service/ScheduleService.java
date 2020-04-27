@@ -18,6 +18,8 @@ public class ScheduleService implements IService<Schedule> {
     @Autowired
     ScheduleRepo scheduleRepo;
 
+    //TODO сделать автоматическое определение для после тестов
+
     /**
      * @param dayOfWeek
      * @param audienceId
@@ -62,8 +64,8 @@ public class ScheduleService implements IService<Schedule> {
             put("audience_id", String.valueOf(schedule.getAudienceId()));
             put("audience", schedule.getAudienceNumber());
             put("lesson_number", String.valueOf(schedule.getLessonNumber()));
-            put("start_time", schedule.getStartTime().format(DateTimeFormatter.ISO_TIME));
-            put("end_time", schedule.getEndTime().format(DateTimeFormatter.ISO_TIME));
+            put("start_time", schedule.getStartTime().format(DateTimeFormatter.ofPattern("hh:mm")));
+            put("end_time", schedule.getEndTime().format(DateTimeFormatter.ofPattern("hh:mm")));
         }};
     }
 }

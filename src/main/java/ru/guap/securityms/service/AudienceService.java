@@ -20,13 +20,21 @@ public class AudienceService implements IService<Audience> {
     ScheduleService scheduleService;
 
     @Transactional
-    public synchronized void reserveAudience(Integer userId, Integer audienceId) {
+    public synchronized boolean reserveAudience(Integer userId, Integer audienceId) {
+        if (isReserved(audienceId)) {
+            return false;
+        }
         audienceRepo.updatePrincipalId(userId, audienceId);
+        return true;
     }
 
     @Transactional
-    public synchronized void endReserveAudience(Integer audienceId) {
+    public synchronized boolean endReserveAudience(Integer userId, Integer audienceId) {
+        if (checkPrincipal(userId, audienceId)) {
+            return false;
+        }
         audienceRepo.updatePrincipalId(null, audienceId);
+        return true;
     }
 
     public List<Map<String, String>> getAudiences(Short building, Short floor) {
@@ -35,6 +43,10 @@ public class AudienceService implements IService<Audience> {
 
     public boolean isReserved(Integer audienceId) {
         return Objects.nonNull(audienceRepo.findById(audienceId).get().getPrincipalId());
+    }
+
+    public boolean checkPrincipal(Integer userId, Integer audienceId) {
+        return userId.equals(audienceRepo.findById(audienceId).get().getPrincipalId());
     }
 
     //TODO Доделать фильтр после тестов
@@ -50,7 +62,7 @@ public class AudienceService implements IService<Audience> {
                     ).findFirst();
                     Map<String, String> node = createJsonNode(audience);
 
-                    if(schedule.isPresent()) {
+                    if (schedule.isPresent()) {
                         node.putAll(scheduleService.createJsonNode(schedule.get()));
                     }
 
