@@ -13,7 +13,6 @@
             </li>
         </ul>
 
-        <div class="navbar-text navbar-fs">${name}</div>
         <#if user??>
             <form class="nav-r" action="/logout" method="post">
                 <input class="input" type="hidden" name="_csrf" value="${_csrf.token}"/>

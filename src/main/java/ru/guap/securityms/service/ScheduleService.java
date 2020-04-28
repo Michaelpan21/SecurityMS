@@ -7,6 +7,7 @@ import ru.guap.securityms.repos.ScheduleRepo;
 import ru.guap.securityms.service.base.IService;
 
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +28,13 @@ public class ScheduleService implements IService<Schedule> {
      */
     public List<Map<String, String>> getTodayByAudience(Integer id) {
         return createJson(
-                scheduleRepo.findAllByDayOfWeekAndAudience_id("MONDAY", id)
+                scheduleRepo.findAllByDayOfWeekAndAudience_idOrderByLesson_number("MONDAY", id)
+        );
+    }
+
+    public List<Map<String, String>> getTodayByUserId(Integer id) {
+        return createJson(
+                scheduleRepo.findAllByDayOfWeekAndProfessor_idOrderByLesson_number("MONDAY", id)
         );
     }
 
@@ -64,8 +71,8 @@ public class ScheduleService implements IService<Schedule> {
             put("audience_id", String.valueOf(schedule.getAudienceId()));
             put("audience", schedule.getAudienceNumber());
             put("lesson_number", String.valueOf(schedule.getLessonNumber()));
-            put("start_time", schedule.getStartTime().format(DateTimeFormatter.ofPattern("hh:mm")));
-            put("end_time", schedule.getEndTime().format(DateTimeFormatter.ofPattern("hh:mm")));
+            put("start_time", schedule.getStartTime().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
+            put("end_time", schedule.getEndTime().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
         }};
     }
 }

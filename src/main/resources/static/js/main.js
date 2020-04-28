@@ -20,7 +20,7 @@ Vue.component('audiences-menu', {
       '</div>' +
       '<h3>Аудитория {{audience.number}}</h3>' +
       '<div class="schedule">' +
-        '<schedule-line v-for="sLine in schedule" :key="sLine.s_id" :sLine ="sLine"/>' +
+        '<schedule-line v-for="sLine in schedule" :key="sLine.s_id" :sLine="sLine"/>' +
       '</div>' +
       '<div class="btn-bar">' +
         '<button @click="openAudience">Получить доступ</button>' +
@@ -58,7 +58,10 @@ Vue.component('audiences-button', {
   props: ['audience'],
   template: '<button v-bind:class="classObject" @click="openMenu">' +
               '<h5>{{audience.number}}</h5>' +
-              '<div v-if="audience.s_id != undefined"><p>{{audience.subject_type}} - {{audience.subject}}</p></div>' +
+              '<div v-if="audience.s_id != undefined">' +
+                '<div>{{audience.subject_type}} - {{audience.subject}}</div>' +
+                '<div>{{audience.professor}}</div>' +
+              '</div>' +
             '</button>',
   computed: {
     classObject: function() {
@@ -93,6 +96,22 @@ var app = new Vue({
   data: {
     audiences: [],
   },
+});
+
+var helper = new Vue({
+  el: '#helper',
+  template:
+    '<div class="schedule">' +
+      '<schedule-line v-for="sLine in schedule" :key="sLine.s_id" :sLine="sLine"/>' +
+    '</div>',
+  data: {
+    schedule: [],
+  },
+  created: function() {
+    scheduleApi.get().then(response => {
+      this.schedule = response.body;
+    });
+  }
 });
 
 var menu = new Vue({

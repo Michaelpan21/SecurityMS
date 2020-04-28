@@ -24,6 +24,10 @@
     </div>
     <div id="app"></div>
 </div>
+<div class="helper-box">
+     <h6>Ваши пары на сегодня:</h6>
+     <div id="helper"></div>
+</div>
 <div id="menu"></div>
 
 </@c.page>

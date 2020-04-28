@@ -25,6 +25,7 @@ public class User implements UserDetails {
 
     private String name;
     private String degree;
+    private Integer professorId;
 
     public boolean isAdmin() {
         return roles.contains(Role.ADMIN);
@@ -106,5 +107,13 @@ public class User implements UserDetails {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Integer getProfessorId() {
+        return professorId;
+    }
+
+    public void setProfessorId(Integer professorId) {
+        this.professorId = professorId;
     }
 }

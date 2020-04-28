@@ -21,9 +21,9 @@
         </head>
         <body>
             <#include "navbar.ftl">
-            <div class="container">
+            <section>
                 <#nested>
-            </div>
+            </section>
             <script src="http://localhost:6969/static/js/main.js"></script>
         </body>
     </html>
